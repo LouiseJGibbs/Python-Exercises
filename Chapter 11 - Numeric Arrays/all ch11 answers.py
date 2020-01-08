@@ -9,8 +9,10 @@ for i in range(0,5):
 
 print(nums)
 nums= sorted(nums)
+nums.reverse()
+
 print(nums)
-print(nums[::-1])
+
 
 #089 Array of random numbers
 nums= array('i', [])

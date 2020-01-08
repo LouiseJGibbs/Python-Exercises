@@ -8,7 +8,6 @@ for i in range(0,5):
 
 print(nums)
 nums= sorted(nums)
-print(nums)
-print(nums[::-1])
+nums.reverse()
 
-print(nums.reverse())
+print(nums)
