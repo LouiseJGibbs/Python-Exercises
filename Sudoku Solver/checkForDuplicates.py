@@ -2,13 +2,13 @@ import collections
 import math
 
 
-grid = [[1, 2, 3, 4],[3, 4, 1, 2],[2, 3, 4, 1],[4, 1, 2, 3]]
+grid = [[1, 2, 3, 3],[3, 4, 1, 2],[2, 3, 4, 1],[4, 1, 2, 3]]
 #grid = [[1,2,3,4,5,6,7,8,9],[4,5,6,7,8,9,1,2,3],[7,8,9,1,2,3,4,5,6],[2,3,4,5,6,7,8,9,1],[5,6,7,8,9,1,2,3,4],[8,9,1,2,3,4,5,6,7],[3,4,5,6,7,8,9,1,2],[6,7,8,9,1,2,3,4,5],[9,1,2,3,4,5,6,7,8]]
-totalSquares = int(math.sqrt(len(grid)))
+totalCols = int(math.sqrt(len(grid)))
 
 def getcol(col, grid):
     fullCol = []
-    for i in range(0,4):
+    for i in range(0,totalCols):
         fullCol.append(grid[i][col])
     return fullCol
 
@@ -17,12 +17,12 @@ def getrow(row, grid):
 
 def getSquare(num, grid):
     square = []
-    for i in range(1, totalSquares + 1):
-        if num < totalSquares*i:
-            start = (num - totalSquares*(i-1)) * totalSquares
-            startCol = totalSquares*(i-1)
-            for j in range(startCol, totalSquares*i):
-                for k in range(start, start + totalSquares):
+    for i in range(1, totalCols + 1):
+        if num < totalCols*i:
+            start = (num - totalCols*(i-1)) * totalCols
+            startCol = totalCols*(i-1)
+            for j in range(startCol, totalCols*i):
+                for k in range(start, start + totalCols):
                     square.append(grid[j][k])
             break
     return square
@@ -42,28 +42,18 @@ def checkDuplicates(data):
 def main():
     correct = True
 
-    #check horizonal
-    for i in range(0, totalSquares**2):
-        d = []
-        d = checkDuplicates(getrow(i, grid))
-        if d:
-            print("The following numbers were found more than once in row", i, ":", d)
+    for i in range(0, totalCols**2):
+        rowDuplicates = checkDuplicates(getrow(i,grid))
+        colDuplicates = checkDuplicates(getcol(i,grid))
+        squareDuplicates = checkDuplicates(getSquare(i,grid))
+        if rowDuplicates:
+            print("The following numbers were found more than once in row",i, ":", rowDuplicates)
             correct = False
-
-    #check vertical
-    for i in range(0, totalSquares**2):
-        d = []
-        d = checkDuplicates(getcol(i, grid))
-        if d:
-            print("The following numbers were found more than once in col",i, ":", d)
+        if colDuplicates:
+            print("The following numbers were found more than once in col",i, ":", colDuplicates)
             correct = False
-
-    #check squares
-    for i in range(0, totalSquares**2):
-        d = []
-        d = checkDuplicates(getSquare(i, grid))
-        if d:
-            print("The following numbers were found more than once in square", i, ":", d)
+        if squareDuplicates:
+            print("The following numbers were found more than once in square", i, ":", squareDuplicates)
             correct = False
 
     if not correct:
