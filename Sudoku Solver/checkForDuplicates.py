@@ -2,13 +2,13 @@ import collections
 import math
 
 
-grid = [[1, 2, 3, 3],[3, 4, 1, 2],[2, 3, 4, 1],[4, 1, 2, 3]]
+grid = [[3, 2, 3, 4],[3, 4, 1, 2],[2, 3, 4, 1],[4, 1, 2, 3]]
 #grid = [[1,2,3,4,5,6,7,8,9],[4,5,6,7,8,9,1,2,3],[7,8,9,1,2,3,4,5,6],[2,3,4,5,6,7,8,9,1],[5,6,7,8,9,1,2,3,4],[8,9,1,2,3,4,5,6,7],[3,4,5,6,7,8,9,1,2],[6,7,8,9,1,2,3,4,5],[9,1,2,3,4,5,6,7,8]]
 totalCols = int(math.sqrt(len(grid)))
 
 def getcol(col, grid):
     fullCol = []
-    for i in range(0,totalCols):
+    for i in range(0,totalCols**2):
         fullCol.append(grid[i][col])
     return fullCol
 
@@ -38,22 +38,29 @@ def checkDuplicates(data):
                 duplicates.append(i)
     return duplicates
 
+def checkMissingNumbers(data):
+    missing = []
+    for i in range(1, totalCols**2 + 1):
+        if i not in data:
+            missing.append(i)
+    return missing
 
 def main():
     correct = True
 
     for i in range(0, totalCols**2):
-        rowDuplicates = checkDuplicates(getrow(i,grid))
-        colDuplicates = checkDuplicates(getcol(i,grid))
-        squareDuplicates = checkDuplicates(getSquare(i,grid))
-        if rowDuplicates:
-            print("The following numbers were found more than once in row",i, ":", rowDuplicates)
+        rowMissing = checkMissingNumbers(getrow(i,grid))
+        colMissing = checkMissingNumbers(getcol(i,grid))
+        squareMissing = checkMissingNumbers(getSquare(i,grid))
+        if rowMissing:
+            print("The following numbers are missing from row",i,":",rowMissing)
             correct = False
-        if colDuplicates:
-            print("The following numbers were found more than once in col",i, ":", colDuplicates)
+        if colMissing:
+            print("The following numbers are missing from col",i,":",colMissing)
+            print(getcol(i,grid))
             correct = False
-        if squareDuplicates:
-            print("The following numbers were found more than once in square", i, ":", squareDuplicates)
+        if squareMissing:
+            print("The following numbers are missing from square",i,":",squareMissing)
             correct = False
 
     if not correct:
