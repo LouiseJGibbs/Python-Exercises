@@ -64,7 +64,7 @@ def getcol(col, grid):
 def getrow(row, grid):
     return grid[row]
 
-def getSquare(num, grid):
+def getSquareWithGridRef(num, grid):
     square = []
     for i in range(1, totalColsInSquare + 1):
         if num < totalColsInSquare*i:
@@ -72,39 +72,53 @@ def getSquare(num, grid):
             startCol = totalColsInSquare*(i-1)
             for j in range(startCol, totalColsInSquare*i):
                 for k in range(start, start + totalColsInSquare):
-                    square.append(grid[j][k])
+                    square.append([grid[j][k], j, k])
             break
     return square
 
-def getSquareNumber(row, col):
-    return (col/totalColsInSquare) + (row/totalColsInSquare)
+def getSquare(num, grid):
+    square = []
+    grid = getSquareWithGridRef(num, grid)
+    for i in range(0, totalColsInSquare**2):
+        square.append(grid[i][0])
+    return square
 
 def fillBlank_SingleNumberCheck(grid):
     change = False
     for i in range(0,totalColsInSquare**2):
         for j in range(0,totalColsInSquare**2):
             if grid[i][j] == 0:
-
                 missingInRow = checkMissingNumbers(getrow(i,grid))
-                missingInCol = checkMissingNumbers(getcol(j, grid))
-                #missingInSquare = checkMissingNumbers(getSquare(int(getSquareNumber(i,j)), grid))
+                if len(missingInRow) == 1:
+                    grid[i][j] = missingInRow[0]
+                    print("(Row) Position", i, j, "has been filled with", missingInRow[0])
+                    change = True
+                    break
                 
+                missingInCol = checkMissingNumbers(getcol(j, grid))
                 if len(missingInCol) == 1:
                     grid[i][j] = missingInCol[0]
-                    print("(Row) Position", i, j, "has been filled with", missingInCol[0])
+                    print("(Col) Position", i, j, "has been filled with", missingInCol[0])
                     change = True
-                    break;
-                elif len(missingInRow) == 1:
-                    grid[i][j] = missingInRow[0]
-                    print("(Col) Position", i, j, "has been filled with", missingInRow[0])
-                    change = True
-                    break;
+
                 #elif len(missingInSquare):
                 #    grid[i][j] = missingInSquare[0]
                 #    print("(Square) Position", i, j, "has been filled with", missingInSquare[0])
                 #    change = True
                 #    break;
-                
+
+    for i in range(0, totalColsInSquare**2):
+        missingInSquare = checkMissingNumbers(getSquare(i, grid))
+        if len(missingInSquare) == 1:
+            for j in getSquareWithGridRef(i, grid):
+                if j[0] == 0:
+                    row = j[1]
+                    col = j[2]
+                    
+                    grid[row][col] = missingInSquare[0]
+                    print("(Square) Position", row, col, "has been filled with", missingInSquare[0]) 
+                    change = True
+                    break
     return change
                     
 def checkMissingNumbers(data):
@@ -134,30 +148,28 @@ def checkCorrect(grid):
     else:
         print("This Sudoku grid is complete")
     return correct
-
+    
 def main():
     #grid = generateRandomGrid()
-    grid = generateGridWithBlank(2)
+    grid = generateGridWithBlank(3)
     draw(grid)
     correct = checkCorrect(grid)
     change = True
     x = 0
 
     while change and not correct:
+        input("Press any key to continue")
         print("Iteration", x)
         x = x + 1
         change = fillBlank_SingleNumberCheck(grid)
         correct = checkCorrect(grid)
         if change:
             draw(grid)
-        if not change:
-            for i in range(0, 3):
-                print("Final Attempt", i)
-                change = fillBlank_SingleNumberCheck(grid)
-            
-            
 
-    print("Can't complete anymore")
+    if correct:
+        print("Congratulations, we've completed the Sudoku grid")
+    else:
+        print("Sorry, we were unable to complete the Sudoku grid")
 
 main()
 
